@@ -41,61 +41,64 @@ spec_Daylight_CCT = [5500,6500,7500];
 load B_cieday
 daylight_spd = GenerateCIEDay(spec_Daylight_CCT,[B_cieday]);
 
-figure, hold on
-plot(SToWls(S_cieday),daylight_spd);
+% figure, hold on
+% plot(SToWls(S_cieday),daylight_spd);
 
-spec_Planck_CCT=2500:500:7500;
-for i=1:length(spec_Planck_CCT)
-BBR_spd(:,i) = GenerateBlackBody(spec_Planck_CCT(i),380:5:780);
+spec_BBR_CCT=2500:500:7500;
+for i=1:length(spec_BBR_CCT)
+BBR_spd(:,i) = GenerateBlackBody(spec_BBR_CCT(i),380:5:780);
 end
 
-figure, hold on
-plot(380:5:780,BBR_spd);
+% figure, hold on
+% plot(380:5:780,BBR_spd);
 
 %UV filtering
 daylight_spd(1:4,:) = 0;
 BBR_spd(1:4,:) = 0;
 
-figure, hold on
-plot(SToWls(S_cieday),daylight_spd);
-
-figure, hold on
-plot(380:5:780,BBR_spd);
+% figure, hold on
+% plot(SToWls(S_cieday),daylight_spd);
+% 
+% figure, hold on
+% plot(380:5:780,BBR_spd);
 
 %% Calculate DI
 
 % "CIE 157:2004 Control of damage to museum objects by optical radiation"
 b = 0.0115;
-% eq 2.5:
-S_dm_rel = exp(-b*(spd_lambda-300));
+S_dm_rel = exp(-b*(spd_lambda-300)); % eq 2.5:
+%figure, plot(spd_lambda,S_dm_rel);
 
-figure, plot(spd_lambda,S_dm_rel);
+% % %-% Padfield terminology:
+% %
+% % http://research.ng-london.org.uk/scientific/spd/?page=info#Relative_Spectral_Sensitivity
+% % Following:
+% % 2: S. Aydinli, E. Krochmann, G.S. Hilbert, J. Krochmann: On the deterioration of exhibited museum objects by optical radiation, CIE Technical Collection 1990, CIE 089-1991, ISBN 978 3 900734 26 8
+% %
+% % b = 0.012;
+% % a = 1/exp(-b*300);
+% % S_dm_rel = a*exp(-b*spd_lambda);
+% %
+% % %-%
 
-% Padfield method:
-% http://research.ng-london.org.uk/scientific/spd/?page=info#Relative_Spectral_Sensitivity
-% Following:
-% 2: S. Aydinli, E. Krochmann, G.S. Hilbert, J. Krochmann: On the deterioration of exhibited museum objects by optical radiation, CIE Technical Collection 1990, CIE 089-1991, ISBN 978 3 900734 26 8
-
-% b = 0.012;
-% a = 1/exp(-b*300);
-% S_dm_rel = a*exp(-b*spd_lambda);
-
-
-load T_xyz1964
-v=T_xyz1964(2,:);
+load T_xyz1931 %2 degree observer
+v=T_xyz1931(2,:);
 %figure, plot(SToWls(S_xyz1964),v_lamda);
-
 
 % figure(1); hold on, title('Original Data');
 % figure(2); hold on, title('Normalised Data');
 % figure(3); hold on, title('UV cut');
-%figure(4); hold on, title('Damage Factors (indicated by line width)');
+% figure(4); hold on, title('Damage Factors (indicated by line width)');
+
+AN = 7.2; %Arbitrary Normalization value
+% This is set to roughly match the values quoted in CIE 2004. Any
+% significance of this value is not known.
 
 for i=1:318
     
     % Normalise for same photopic value
     Ts=sum(spd_data(i).spd.*v');
-    spd_data(i).spd_norm=10/Ts*spd_data(i).spd;
+    spd_data(i).spd_norm=AN/Ts*spd_data(i).spd;
     
     % UV cut
     spd_data(i).spd_norm_uv=spd_data(i).spd_norm;
@@ -111,9 +114,43 @@ for i=1:318
     
 end
 
+% Daylight
+for i=1:size(daylight_spd,2)
+    
+    % Normalise for same photopic value
+    Ts=sum(daylight_spd(:,i).*v');
+    daylight_spd_norm(:,i)=AN/Ts*daylight_spd(:,i);
+    
+    % Calculate DI (damage factor)
+    daylight_spd_DI(i)=S_dm_rel'*daylight_spd_norm(:,i);
+    
+end
+
+% figure; plot(daylight_spd)
+% figure; plot(daylight_spd_norm)
+
+% BBR
+for i=1:size(BBR_spd,2)
+    
+    % Normalise for same photopic value
+    Ts=sum(BBR_spd(:,i).*v');
+    BBR_spd_norm(:,i)=AN/Ts*BBR_spd(:,i);
+    
+    % Calculate DI (damage factor)
+    BBR_spd_DI(i)=S_dm_rel'*BBR_spd_norm(:,i);
+    
+end
+
+% figure; plot(BBR_spd)
+% figure; plot(BBR_spd_norm)
+
 %% Plot 
 
-scatter(extractfield(spd_data,'CCT'),extractfield(spd_data,'DI'),'k.');
+figure, hold on
+scatter(extractfield(spd_data,'CCT'),extractfield(spd_data,'DI'),'k','filled','MarkerFaceAlpha',.2);
+
+scatter(spec_Daylight_CCT,daylight_spd_DI,'r','filled','MarkerFaceAlpha',.5);
+scatter(spec_BBR_CCT,BBR_spd_DI,'b','filled','MarkerFaceAlpha',.5);
 
 %% - %%
 
