@@ -81,8 +81,8 @@ S_dm_rel = exp(-b*(spd_lambda-300)); % eq 2.5:
 % %
 % % %-%
 
-load T_xyz1931 %2 degree observer
-v=T_xyz1931(2,:);
+load T_xyz1964 %2 degree observer
+v=T_xyz1964(2,:);
 %figure, plot(SToWls(S_xyz1964),v_lamda);
 
 % figure(1); hold on, title('Original Data');
@@ -144,13 +144,36 @@ end
 % figure; plot(BBR_spd)
 % figure; plot(BBR_spd_norm)
 
-%% Plot 
+%% Plot all
 
 figure, hold on
-scatter(extractfield(spd_data,'CCT'),extractfield(spd_data,'DI'),'k','filled','MarkerFaceAlpha',.2);
+t_CCT=extractfield(spd_data,'CCT');
+t_DI=extractfield(spd_data,'DI');
+scatter(t_CCT,t_DI,'k','filled','MarkerFaceAlpha',.2);
 
 scatter(spec_Daylight_CCT,daylight_spd_DI,'r','filled','MarkerFaceAlpha',.5);
 scatter(spec_BBR_CCT,BBR_spd_DI,'b','filled','MarkerFaceAlpha',.5);
+
+xlabel('CCT')
+ylabel('DI')
+
+%% Plot families
+
+% This isn't working currently.
+% I want to be able to create an index and pull out 'commercial' lamps, for
+% example. Code like this should work but doesn't seem to want to:
+
+% https://stackoverflow.com/questions/25646384/matlab-structure-copy-only-elements-with-certain-value-in-one-field/25646951#25646951
+
+% clc
+% S = struct('ID', {1, 2, 3, 4}, ...
+%            'Direction', {'+', '+', '-', '-'}, ...
+%            'Length', {1, 2, 3, 4}, ...
+%            'Width', {1, 2, 3, 4});
+% 
+% S([S.Direction] == '+')
+% 
+% S([S.Direction] == '-')
 
 %% - %%
 
