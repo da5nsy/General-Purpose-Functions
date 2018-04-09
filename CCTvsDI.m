@@ -96,7 +96,6 @@ for i=1:318
     % Normalise for same photopic value
     Ts=sum(spd_data(i).spd.*v');
     spd_data(i).spd_norm=10/Ts*spd_data(i).spd;
-
     
     % UV cut
     spd_data(i).spd_norm_uv=spd_data(i).spd_norm;
@@ -112,8 +111,6 @@ for i=1:318
     
 end
 
-% Exclude energy <400nm
-
 %% Plot 
 
 scatter(extractfield(spd_data,'CCT'),extractfield(spd_data,'DI'),'k.');
@@ -121,8 +118,8 @@ scatter(extractfield(spd_data,'CCT'),extractfield(spd_data,'DI'),'k.');
 %% - %%
 
 % If I were to calculate the CCTs fresh:
+% https://uk.mathworks.com/matlabcentral/fileexchange/28185-pspectro--photometric-and-colorimetric-calculations
 
-% % Requires pspectro functions
-% % Source: https://uk.mathworks.com/matlabcentral/fileexchange/28185-pspectro--photometric-and-colorimetric-calculations
-
-
+% or
+% http://www.lrc.rpi.edu/programs/nlpip/lightinganswers/lightsources/appendixb1.asp
+% http://www.lrc.rpi.edu/programs/nlpip/lightinganswers/lightsources/scripts/NLPIP_LightSourceColor_Script.m
