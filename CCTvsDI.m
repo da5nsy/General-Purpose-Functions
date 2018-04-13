@@ -149,56 +149,29 @@ end
 figure, hold on
 t_CCT=extractfield(spd_data,'CCT');
 t_DI=extractfield(spd_data,'DI');
-scatter(t_CCT,t_DI,'k','filled','MarkerFaceAlpha',.2);
+scatter(t_CCT,t_DI,'k','filled','MarkerFaceAlpha',.2, 'DisplayName','All sources');
 
-scatter(spec_Daylight_CCT,daylight_spd_DI,'r','filled','MarkerFaceAlpha',.5);
-scatter(spec_BBR_CCT,BBR_spd_DI,'b','filled','MarkerFaceAlpha',.5);
+%Plot everything
+% scatter(spec_Daylight_CCT,daylight_spd_DI,'r','filled','MarkerFaceAlpha',.5);
+% scatter(spec_BBR_CCT,BBR_spd_DI,'b','filled','MarkerFaceAlpha',.5);
 
 xlabel('CCT')
-ylabel('DI')
+ylabel('DI (arbitrarily scaled)')
 
-%% Plot families
+c_choice={'Model','Commercial','Experimental','Theoretical',};
+colours=jet(4);
 
-% This isn't working currently.
-% I want to be able to create an index and pull out 'commercial' lamps, for
-% example. Code like this should work but doesn't seem to want to:
+for i=1:length(c_choice)
+    chosen_category=c_choice{i};
+    chosen_category_index=strcmp(extractfield(spd_data,'category'),chosen_category);
+    scatter(t_CCT(chosen_category_index),t_DI(chosen_category_index),...
+        [],colours(i,:),'filled','MarkerFaceAlpha',.5,...
+        'DisplayName',chosen_category);
+end
+legend('Location','Best')
 
-% https://stackoverflow.com/questions/25646384/matlab-structure-copy-only-elements-with-certain-value-in-one-field/25646951#25646951
-
-% clc
-% S = struct('ID', {1, 2, 3, 4}, ...
-%            'Direction', {'+', '+', '-', '-'}, ...
-%            'Length', {1, 2, 3, 4}, ...
-%            'Width', {1, 2, 3, 4});
-% 
-% S([S.Direction] == '+')
-% 
-% S([S.Direction] == '-')
-
-% I think it's because the fields are all different lengths
-
-
-% This is pulled from the extractfield script I've been using.
-% Perhaps this would work.
-
-% % The elements in the field are mixed size
-% % Reshape into a row vector and append
-% A = reshape(S(1).(name),[ 1 numel(S(1).(name)) ]);
-% for i=2:length(S)
-%     values = reshape(S(i).(name),[ 1 numel(S(i).(name)) ]);
-%     A = [A values];
-% end
-
-% What I really want to be able to do is say:
-% chosen_category=X;
-% scatter(t_CCT(chosen_category),t_DI(chosen_category)
-% title(chosen_category)
-
-chosen_category='Model';
-chosen_category_index=strcmp(extractfield(spd_data,'category'),chosen_category);
-figure,
-scatter(t_CCT(chosen_category_index),t_DI(chosen_category_index));
-title(chosen_category);
+xlim([1000 9000]);
+ylim([0.4 2.1]);
 
 %% - %%
 
