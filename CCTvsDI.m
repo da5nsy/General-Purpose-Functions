@@ -13,7 +13,7 @@
 clear, clc, close all
 
 spd_data_filename='C:\Users\cege-user\Dropbox\UCL\Data\Colour standards\IES TM-30-15 Advanced CalculationTool v1.02.xlsm';
-[d.num,d.txt,d.raw] = xlsread(spd_data_filename,'MultipleSPDCalc_5nm');
+[d.num,d.txt,d.raw] = xlsread(spd_data_filename,'MultipleSPDCalc_5nm'); %alternative: 'MultipleSPDCalc_1nm' #untested
 
 for i=1:318
     %SPD:
@@ -26,6 +26,9 @@ for i=1:318
     spd_data(i).Rf =            d.num(1,i+1);  
     spd_data(i).Rg =            d.num(2,i+1);    
     spd_data(i).CCT =           d.num(3,i+1);
+    
+    % UV cut
+    spd_data(i).spd(1:4)=0;
 end
 
 spd_lambda = d.num(5:end,1);
@@ -100,12 +103,9 @@ for i=1:318
     Ts=sum(spd_data(i).spd.*v');
     spd_data(i).spd_norm=AN/Ts*spd_data(i).spd;
     
-    % UV cut
-    spd_data(i).spd_norm_uv=spd_data(i).spd_norm;
-    spd_data(i).spd_norm_uv(1:4)=0;
-    
+ 
     % Calculate DI (damage factor)
-    spd_data(i).DI=S_dm_rel'*spd_data(i).spd_norm_uv;
+    spd_data(i).DI=S_dm_rel'*spd_data(i).spd_norm;
     
     %figure(1); plot(spd_lambda,spd_data(i).spd)
     %figure(2); plot(spd_lambda,spd_data(i).spd_norm)
@@ -174,6 +174,31 @@ ylabel('DI')
 % S([S.Direction] == '+')
 % 
 % S([S.Direction] == '-')
+
+% I think it's because the fields are all different lengths
+
+
+% This is pulled from the extractfield script I've been using.
+% Perhaps this would work.
+
+% % The elements in the field are mixed size
+% % Reshape into a row vector and append
+% A = reshape(S(1).(name),[ 1 numel(S(1).(name)) ]);
+% for i=2:length(S)
+%     values = reshape(S(i).(name),[ 1 numel(S(i).(name)) ]);
+%     A = [A values];
+% end
+
+% What I really want to be able to do is say:
+% chosen_category=X;
+% scatter(t_CCT(chosen_category),t_DI(chosen_category)
+% title(chosen_category)
+
+chosen_category='Model';
+chosen_category_index=strcmp(extractfield(spd_data,'category'),chosen_category);
+figure,
+scatter(t_CCT(chosen_category_index),t_DI(chosen_category_index));
+title(chosen_category);
 
 %% - %%
 
