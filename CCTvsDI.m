@@ -151,24 +151,59 @@ t_CCT=extractfield(spd_data,'CCT');
 t_DI=extractfield(spd_data,'DI');
 scatter(t_CCT,t_DI,'k','filled','MarkerFaceAlpha',.2, 'DisplayName','All sources');
 
-%Plot everything
+% %Plot D series 
 % scatter(spec_Daylight_CCT,daylight_spd_DI,'r','filled','MarkerFaceAlpha',.5);
+
+% Plot black body radiators 
 % scatter(spec_BBR_CCT,BBR_spd_DI,'b','filled','MarkerFaceAlpha',.5);
 
 xlabel('CCT')
 ylabel('DI (arbitrarily scaled)')
 
-c_choice={'Model','Commercial','Experimental','Theoretical',};
-colours=jet(4);
+%c_choice={'Model','Commercial','Experimental','Theoretical'};
+c_choice={'Fluorescent Broadband','Fluorescent Narrowband','High Intensity Discharge','Incandescent/Filament','LED Hybrid','LED Mixed','LED Phosphor','Mathematical','Other'};
+colours=jet(length(c_choice));
 
 for i=1:length(c_choice)
     chosen_category=c_choice{i};
-    chosen_category_index=strcmp(extractfield(spd_data,'category'),chosen_category);
+    %chosen_category_index=strcmp(extractfield(spd_data,'category'),chosen_category);
+    chosen_category_index=strcmp(extractfield(spd_data,'sourceType'),chosen_category);
     scatter(t_CCT(chosen_category_index),t_DI(chosen_category_index),...
         [],colours(i,:),'filled','MarkerFaceAlpha',.5,...
         'DisplayName',chosen_category);
 end
 legend('Location','Best')
+
+xlim([1000 9000]);
+ylim([0.4 2.1]);
+
+
+%% Plot everything, coloured for Rf
+
+% split at 80 (green above, red below)
+figure, hold on
+t_CCT=extractfield(spd_data,'CCT');
+t_DI=extractfield(spd_data,'DI');
+t_Rf=extractfield(spd_data,'Rf');
+t_Rf_idx=t_Rf<80;
+scatter(t_CCT(t_Rf_idx),t_DI(t_Rf_idx),'g','filled');
+scatter(t_CCT(~t_Rf_idx),t_DI(~t_Rf_idx),'r','filled');
+
+xlabel('CCT')
+ylabel('DI (arbitrarily scaled)')
+
+
+% % graded by colour
+% figure, hold on
+% t_CCT=extractfield(spd_data,'CCT');
+% t_DI=extractfield(spd_data,'DI');
+% t_Rf=extractfield(spd_data,'Rf');
+% scatter(t_CCT,t_DI,[],t_Rf,'filled');
+% 
+% xlabel('CCT')
+% ylabel('DI (arbitrarily scaled)')
+% 
+% colorbar
 
 xlim([1000 9000]);
 ylim([0.4 2.1]);
