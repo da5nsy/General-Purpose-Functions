@@ -4,6 +4,7 @@ function git(message)
 
 %cd('C:\Users\cege-user\Dropbox\Documents\MATLAB\SAPS')
 cd('C:\Users\cege-user\Dropbox\Documents\MATLAB\General Purpose Functions')
+%cd('C:\Users\cege-user\Dropbox\Documents\MATLAB\Melanopsin_Computational')
 
 
 %!git add SAPS_DataAnalysis.m
