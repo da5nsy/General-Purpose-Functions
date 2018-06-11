@@ -12,10 +12,16 @@
 
 %% Load Light Sources
 
-clear, clc, close all
+clear, clc, %close all
 
-spd_data_filename='C:\Users\cege-user\Dropbox\UCL\Data\Colour standards\IES TM-30-15 Advanced CalculationTool v1.02.xlsm';
-[d.num,d.txt,d.raw] = xlsread(spd_data_filename,'MultipleSPDCalc_5nm'); %alternative: 'MultipleSPDCalc_1nm' #untested
+nm=5; %Use SPD data at 1nm or 5nm intervals?
+if nm == 1    
+    spd_data_filename='C:\Users\cege-user\Dropbox\UCL\Data\Colour standards\IES TM-30-15 Advanced CalculationTool v1.02.xlsm';
+    [d.num,d.txt,d.raw] = xlsread(spd_data_filename,'MultipleSPDCalc_1nm'); 
+elseif nm == 5    
+    spd_data_filename='C:\Users\cege-user\Dropbox\UCL\Data\Colour standards\IES TM-30-15 Advanced CalculationTool v1.02.xlsm';
+    [d.num,d.txt,d.raw] = xlsread(spd_data_filename,'MultipleSPDCalc_5nm'); 
+end
 
 for i=1:318
     %SPD:
@@ -30,7 +36,11 @@ for i=1:318
     spd_data(i).CCT =           d.num(3,i+1);
     
     % UV cut
-    spd_data(i).spd(1:4)=0;
+    if nm == 1   
+        spd_data(i).spd(1:20)=0;
+    elseif nm == 5
+        spd_data(i).spd(1:4)=0;
+    end
 end
 
 spd_lambda = d.num(5:end,1);
@@ -61,19 +71,25 @@ S_dm_rel = exp(-b*(spd_lambda-300)); % eq 2.5:
 % % %-%
 
 load T_xyz1964 %10 degree observer
-v=T_xyz1964(2,:);
+if nm == 1
+    v=SplineCmf(S_xyz1964,T_xyz1964(2,:),[380,1,401]);
+elseif nm == 5
+    v=T_xyz1964(2,:);
+end
+    
 %figure, plot(SToWls(S_xyz1964),v);
 
-ref_idx=76; % Which SPD to use as a reference? (Will be set to DI of 1)
+% Compute reference value
+ref_idx=76;                             % Which SPD? (Will be set to DI of 1)
 ref_Ts=sum(spd_data(ref_idx).spd.*v');  % Compute photopic value for ref
 ref_spd_norm=1/ref_Ts*spd_data(ref_idx).spd;  % Compute normalisation value
 ref_DI=S_dm_rel'*ref_spd_norm;          % Compute ref DI (damage factor)
-N = 1/ref_DI;                           % Normalization value
+RV = 1/ref_DI;                           % Normalization value
 
 for i=1:318    
     % Normalise for same photopic value
     Ts=sum(spd_data(i).spd.*v');
-    spd_data(i).spd_norm=N/Ts*spd_data(i).spd;    
+    spd_data(i).spd_norm=RV/Ts*spd_data(i).spd;    
  
     % Calculate DI (damage factor)
     spd_data(i).DI=S_dm_rel'*spd_data(i).spd_norm;
