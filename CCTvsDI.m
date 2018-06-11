@@ -6,7 +6,7 @@
 % Requires: 
 % "psychtoolbox" for generating daylights and black body radiators (though
 % there's a few of these already in the TM-30-15 dataset
-% "extractfield" for pulling fields to plot (could do this with a loop)
+% "extractfield" for pulling fields to plot (could alternatively do this with a loop)
 
 %% Load Light Sources
 
@@ -56,14 +56,14 @@ end
 % plot(380:5:780,BBR_spd);
 
 %UV filtering
-daylight_spd(1:4,:) = 0;
+daylight_spd(1:4,:) = 0; %380:395 = 0; remove radiation below 400nm
 BBR_spd(1:4,:) = 0;
 
-% figure, hold on
-% plot(SToWls(S_cieday),daylight_spd);
-% 
-% figure, hold on
-% plot(380:5:780,BBR_spd);
+figure, hold on
+plot(SToWls(S_cieday),daylight_spd);
+
+figure, hold on
+plot(380:5:780,BBR_spd);
 
 %% Calculate DI
 
@@ -94,15 +94,14 @@ v=T_xyz1964(2,:);
 % figure(4); hold on, title('Damage Factors (indicated by line width)');
 
 AN = 7.2; %Arbitrary Normalization value
-% This is set to roughly match the values quoted in CIE 2004. Any
-% significance of this value is not known.
+% This is set to roughly match the values quoted in CIE 2004. 
+% Any significance of this value is not known.
 
 for i=1:318
     
     % Normalise for same photopic value
     Ts=sum(spd_data(i).spd.*v');
-    spd_data(i).spd_norm=AN/Ts*spd_data(i).spd;
-    
+    spd_data(i).spd_norm=AN/Ts*spd_data(i).spd;    
  
     % Calculate DI (damage factor)
     spd_data(i).DI=S_dm_rel'*spd_data(i).spd_norm;
@@ -186,8 +185,8 @@ t_CCT=extractfield(spd_data,'CCT');
 t_DI=extractfield(spd_data,'DI');
 t_Rf=extractfield(spd_data,'Rf');
 t_Rf_idx=t_Rf<80;
-scatter(t_CCT(t_Rf_idx),t_DI(t_Rf_idx),'g','filled');
-scatter(t_CCT(~t_Rf_idx),t_DI(~t_Rf_idx),'r','filled');
+scatter(t_CCT(t_Rf_idx),t_DI(t_Rf_idx),'r','filled');
+scatter(t_CCT(~t_Rf_idx),t_DI(~t_Rf_idx),'g','filled');
 
 xlabel('CCT')
 ylabel('DI (arbitrarily scaled)')
