@@ -16,8 +16,15 @@ T_sp_jv(2,:) = (...
     + 0.45684*(T_xyzJuddVos(2,:))...
     + 0.03286*(T_xyzJuddVos(3,:)));
 
+% Scaling of the S cones is theoretically arbitrary:
+
+% CVRL:
+% T_sp_jv(3,:) = (...
+%     + 0.00801*(T_xyzJuddVos(3,:)));
+
+% Mac & Boyn 1978:
 T_sp_jv(3,:) = (...
-    + 0.00801*(T_xyzJuddVos(3,:)));
+    + 0.01608*(T_xyzJuddVos(3,:)));
 
 
 T_sp_jv=(T_sp_jv'/diag([max(T_sp_jv')]))';
