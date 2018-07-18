@@ -18,8 +18,8 @@
 %
 % Presumably there is an official CIE standard behind a paywall somewhere 
 % which exmplains it all
-
-% Recommendation: revert to Judd data
+% Scrap that - it's a BSI which means I have access through UCL (woopee!
+% shall read and see if there's any sensible info...)
 
 clear, clc
 
