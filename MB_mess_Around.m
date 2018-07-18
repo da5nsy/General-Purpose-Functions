@@ -34,3 +34,15 @@ T_lum=T_cones_ss10(1,:)+0.5*T_cones_ss10(2,:);
 
 factors = (T_cones(1:2,:)'\T_lum')
 diag([factors ; 1])
+
+%% In PTB are all the sensitivities normalised?
+clear, clc
+
+load T_cones_ss2.mat
+load T_cones_sp.mat
+
+figure, hold on
+plot(SToWls(S_cones_sp),T_cones_sp)
+plot(SToWls(S_cones_ss2),T_cones_ss2)
+
+% That's a yes Houston.
