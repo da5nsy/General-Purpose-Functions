@@ -1,20 +1,26 @@
 % Messing around with Psychtoolbox LMSToMacBoyn
 % C:\toolbox\Psychtoolbox\PsychColorimetric
+clear, clc
 
 %Get some random LMS (but same each time)
-clc
-try load LMS
-catch
-    LMS=rand(3,10);
-    save('LMS')
-end
-LMS
+rng(1)
+LMS=rand(3,10);
 
 % Scale LMS so that L+M = luminance
-LMS = diag([0.6373 0.3924 1]')*LMS;
+% LMS = [1,1,1] would -> LMS = [0.6373 0.3924 1]
+% 0.6373 0.3924 must be relative contributions to luminance (?)
+% Renaming for clarity
+LMS_d = diag([0.6373 0.3924 1]')*LMS;
+
+% if (nargin == 1)
+% 	LMS = diag([0.6373 0.3924 1]')*LMS;
+% else
+% 	factors = (T_cones(1:2,:)'\T_lum');
+% 	LMS = diag([factors ; 1])*LMS;
+% end
 
 % Compute ls coordinates from LMS
-n = size(LMS,2);
-ls = zeros(2,n);
-denom = [1 1 0]*LMS;
-ls = LMS([1 3],:) ./ ([1 1]'*denom);
+ls = zeros(2,size(LMS_d,2)); %pre-allocate variable
+
+denom = [1 1 0]*LMS_d; %L+M
+ls = LMS_d([1 3],:) ./ ([1 1]'*denom);
