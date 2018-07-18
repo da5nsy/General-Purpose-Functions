@@ -4,6 +4,7 @@ clear, clc
 % 1: SP as it exists in PTB
 load T_cones_sp.mat
 
+
 % 2: SP derived from Judd/Vos, as instructed on CVRL
 load T_xyzJuddVos
 T_sp_jv(1,:) = (...
@@ -19,24 +20,30 @@ T_sp_jv(2,:) = (...
 % Scaling of the S cones is theoretically arbitrary:
 
 % CVRL:
-% T_sp_jv(3,:) = (...
-%     + 0.00801*(T_xyzJuddVos(3,:)));
+T_sp_jv(3,:) = (...
+    + 0.00801*(T_xyzJuddVos(3,:)));
 
 % Mac & Boyn 1978:
-T_sp_jv(3,:) = (...
-    + 0.01608*(T_xyzJuddVos(3,:)));
+% T_sp_jv(3,:) = (...
+%     + 0.01608*(T_xyzJuddVos(3,:)));
 
-
-T_sp_jv=(T_sp_jv'/diag([max(T_sp_jv')]))';
 
 % 3: SP from CVRL
 T_sp_CVRL = csvread('C:\Users\cege-user\Dropbox\Documents\MATLAB\General Purpose Functions\sp.csv');
 %Make non-log, and normalise to peak 1
-T_sp_CVRL(:,2:4)=(10.^(T_sp_CVRL(:,2:4)))./max(10.^(T_sp_CVRL(:,2:4))); 
+%T_sp_CVRL(:,2:4)=(10.^(T_sp_CVRL(:,2:4)))./max(10.^(T_sp_CVRL(:,2:4))); 
+T_sp_CVRL(:,2:4)=10.^(T_sp_CVRL(:,2:4)); 
 %Get wavlength range, and put in psychtoolbox format
 S_sp_CVRL=[T_sp_CVRL(1,1),T_sp_CVRL(2,1)-T_sp_CVRL(1,1),length(T_sp_CVRL)]; 
 T_sp_CVRL=T_sp_CVRL(:,2:4)'; %Remove wavelength range
 
+
+% % Normalise?
+ 
+% T_sp_jv   = (T_sp_jv'/diag([max(T_sp_jv')]))';     %from non-normalised -> normalised
+% T_sp_CVRL = (T_sp_CVRL'/diag([max(T_sp_CVRL')]))'; %from non-normalised -> normalised
+
+T_cones_sp  = diag([0.6373 0.3924 1]')*T_cones_sp;   %from normalised -> non-normalised
 
 %%
 
