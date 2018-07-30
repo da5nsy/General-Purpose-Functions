@@ -1,7 +1,7 @@
 %% Prepare for Newastle presentation
 % Make graphs from Granada data for presentation at Newcastle University on
 % 2018/03/21
-% ppt archived here: figshare.com/!!!!!!!!!!!!!!
+% ppt archived here: https://doi.org/10.6084/m9.figshare.6007658.v2
 
 %Requires:
 %psychtoolbox
