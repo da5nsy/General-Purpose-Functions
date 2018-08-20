@@ -3,45 +3,55 @@ function Mel_Phot_Corr()
 % Is there a greater correlation between melanopic and photopic luminance
 % for natural light sources than for artificial light sources?
 
-% % To do list
-% % ----------
-% % - add a line of best fit
-% % - add a r2 value for each line
-
 %% Pre-flight
 
 clear, clc, close all
 
-ryer = 0; %Plot Royer data?
+PF_justReal = 1; %Exclude theoretical illums from Houser data
 
 %% Load Data
 
-% Load artificial light sources (1nm data from IES TM-30-15 spreadsheet)
-spd_data_filename='C:\Users\cege-user\Dropbox\UCL\Data\Colour standards\IES TM-30-15 Advanced CalculationTool v1.02.xlsm';
-[d.num,d.txt,d.raw] = xlsread(spd_data_filename,'MultipleSPDCalc_5nm');
-S_artificial = [380,5,81];
+% Load artifical lighting spds
+% https://github.com/Psychtoolbox-3/Psychtoolbox-3/blob/0dac597065c348d0efb8d024c052fd8e9ff17322/Psychtoolbox/PsychColorimetricData/PsychColorimetricMatFiles/spd_houser.mat
 
-for i=1:size(d.num,2)-1
-    %SPD:
-    spd_data(i).spd =           d.num(5:end,i+1);
-    
-    %Additional data:
-    spd_data(i).sourceType =    d.raw{4,i+1};
-    spd_data(i).name =          d.raw{5,i+1};
-    spd_data(i).category =      d.raw{6,i+1};
-    %spd_data(i).Rf =            d.num(1,i+1);
-    %spd_data(i).Rg =            d.num(2,i+1);
-    spd_data(i).CCT =           d.num(3,i+1);
-    
-    % Only add 'Commercial' SPDs
-    if strcmp(spd_data(i).category,'Commercial')
-        if ~exist('T_artif','var') %declare this variable if it doesn't exist yet
-            T_artif=spd_data(i).spd;
-        else
-            T_artif(:,end+1)=spd_data(i).spd;
-        end        
-    end
+% 401 normalised illuminant spectral power distributions from:
+% "Review of measures for light-source color rendition and considerations
+% for a two-measure system for characterizing color rendition"
+% Kevin W. Houser, Minchen Wei, Aurélien David, Michael R. Krames, and Xiangyou Sharon Shen
+% Optics Express, Vol. 21, Issue 8, pp. 10393-10411 (2013)
+% http://dx.doi.org/10.1364/OE.21.010393
+
+load spd_houser.mat
+labels_houser = labels_houser(2:end); %this version incorrectly includes a duplicate value #1
+spd_houser = spd_houser(:,2:end);
+
+codes_houser = strsplit('H	H	G	C	C	D	E	E	E	E	F	F	H	H	H	H	H	H	H	H	H	A	A	G	G	G	G	L	L	L	L	C	C	C	C	C	C	C	C	C	D	D	D	E	E	D	D	D	D	D	C	C	C	C	C	C	C	C	C	C	C	E	E	E	E	E	H	H	H	H	H	H	I	I	I	I	H	H	H	H	B	B	B	B	B	H	H	H	H	G	H	H	H	H	H	H	H	H	H	G	G	G	G	G	G	G	G	G	G	G	G	G	G	G	G	G	A	A	A	A	A	A	A	J	J	J	J	J	J	J	J	K	K	K	K	K	K	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	E	H	H	H	H	H	H	G	G	G	G	G	H	H	H	I	I	I	I	I	I	I	I	I	I	I	I	I	I	I	I	I	I	I	I	I	I	I	I	I	I	I	I	I	I	I	I	I	I	I	I	I	I	I	I	E	E	E	E	F	H	B	A	A	B	E	E	E	F	D	B	B	B	B	B	B	B	I	H	H	H	H	H	H	H	F	F	F	D	D	B	B	B	D	D	F	D	D	D	D	D	D	D	D	D	D	D	D	C	C	F	F	F	F	E	E	E	E	L	L	D	D	D	D	D	C	C	C	C	C	C	F	E	E	E	F	E	E	E	E	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	E	F	F	F	A	A	A	A	G');
+% could do above with xlsread, would be neater but slower, and relies on
+% others using this script having the xls
+ 
+% 1-Letter Code	Lamp Category	
+% 	Real Illuminants	
+% A		LED Phosphor Real
+% B		LED Mixed Real
+% C		Fluorescent Broadband
+% D		Fluorescent Narrowband
+% E		HID
+% F		Tungesten Filament
+% 	Theoretical Illuminants	
+% G		LED Phosphor Models
+% H		LED Mixed Models
+% I		Fluorescent Models
+% J		Blackbody Radiation
+% K		D-Series Illuminant
+% L		Other (e.g., Equal-Energy, Clipped Incan, Ideal Prime Color)
+
+if PF_justReal
+    spd_houser = spd_houser(:,ismember(codes_houser,{'A','B','C','D','E','F'}));
 end
+
+T_artif = spd_houser;
+
+
 
 % Load Daylight Data
 load('C:\Users\cege-user\Dropbox\UCL\Data\Reference Data\Granada Data\Granada_daylight_2600_161.mat');
@@ -55,210 +65,35 @@ S_day = [380,5,81];
 %       spectroradiometric characteristics of narrow-field-of-view
 %       clear skylight in Granada, Spain" (2001)
 
-% Load data from:
-% Royer, M., Wilkerson, A., Wei, M., Houser, K., Davis, R., 2016.
-% "Human perceptions of colour rendition vary with average fidelity,
-% average gamut, and gamut shape." Lighting Research & Technology 1–26.
-% https://doi.org/10.1177/1477153516663615
-% (Supplemental data received from personal correspondance with first
-% author)
-
-data_filename='C:\Users\cege-user\Zotero\storage\FBA56DDB\Supplemental Data Summary.xlsx';
-[e.num,e.txt,e.raw] = xlsread(data_filename,'Data');
-
-T_e           = e.num(61:461,2:end); %no reason for 'e', it just followed 'd', for which I've forgotten the logic.
-e_ratings     = e.num(1:3,2:end);
-e_Rcs         = e.num(10:25,2:end);
-e_Rf          = e.num(8,2:end);
-S_e = [380,1,401];
-%figure, plot(SToWls(S_e),T_e);
-
 %% Load observer
 
 % Obs data
 load('T_cones_ss10')  % 10 deg obs
-% load('T_cones_ss2') % 2 deg obs
 load('T_melanopsin')
-
-% figure, hold on
-% for i=1:3
-%     plot(SToWls(S_cones_ss10),T_cones_ss10(i,:))
-% end
-% legend
 
 %% Calculate cone/mel values
 
 % Calculate LMS of daylight samples
-LMS_d(:,:)=SplineSpd(S_cones_ss10,T_cones_ss10',S_day)'*T_day;
-LMS_a(:,:)=SplineSpd(S_cones_ss10,T_cones_ss10',S_day)'*T_artif;
-LMS_e(:,:)=SplineSpd(S_cones_ss10,T_cones_ss10',S_e)'*T_e;
+LMS_d(:,:)=SplineCmf(S_cones_ss10,T_cones_ss10,S_day)*T_day;
+LMS_a(:,:)=SplineCmf(S_cones_ss10,T_cones_ss10,S_day)*T_artif;
 
 % Calulate M of daylight samples
-Mel_d(:,:)=SplineSpd(S_melanopsin,T_melanopsin',S_day)'*T_day;
-Mel_a(:,:)=SplineSpd(S_melanopsin,T_melanopsin',S_day)'*T_artif;
-Mel_e(:,:)=SplineSpd(S_melanopsin,T_melanopsin',S_e)'*T_e;
+Mel_d(:,:)=SplineCmf(S_melanopsin,T_melanopsin,S_day)*T_day;
+Mel_a(:,:)=SplineCmf(S_melanopsin,T_melanopsin,S_day)*T_artif;
+
+R_d = (LMS_d(1,:)+LMS_d(2,:))./Mel_d; %r for ratio
+R_a = (LMS_a(1,:)+LMS_a(2,:))./Mel_a; 
 
 
-%% Plot luminince comparison (L+M)
-
+%% 
 figure, hold on
+histogram(R_d,'BinWidth',0.1,'Normalization','probability')
+histogram(R_a,'BinWidth',0.1,'Normalization','probability')
 
-P_d=(LMS_d(1,:)+LMS_d(2,:))/max(LMS_d(1,:)+LMS_d(2,:));
-P_a=(LMS_a(1,:)+LMS_a(2,:))/max(LMS_a(1,:)+LMS_a(2,:));
-P_e=(LMS_e(1,:)+LMS_e(2,:))/max(LMS_e(1,:)+LMS_e(2,:));
-I_d=Mel_d/max(Mel_d);
-I_a=Mel_a/max(Mel_a);
-I_e=Mel_e/max(Mel_e);
-% I_d=Mel_d/max(LMS_d(1,:)+LMS_d(2,:));
-% I_a=Mel_a/max(LMS_a(1,:)+LMS_a(2,:));
-% I_e=Mel_e/max(LMS_e(1,:)+LMS_e(2,:));
+xlabel('(L+M) / I')
+ylabel('Probability')
 
-scatter(P_d,I_d,'r')
-scatter(P_a,I_a,'b')
-if ryer
-    scatter(P_e,I_e,'g')
-    %scatter(P_e,I_e,((e_ratings(2,:)-min(e_ratings(2,:)))*10)+1,'g','filled')
-    %scatter(P_e,I_e,((e_ratings(1,:)-min(e_ratings(3,:)))*10)+1,'g','filled')
-end
-
-xlabel('Normalised L+M')
-ylabel('Normalised I (Mel)')
-
-if ryer
-    legend({'Daylight','Artificial','Royer'},'Location','Best')
-else
-    legend({'Daylight','Artificial'},'Location','Best')
-end
-
-% %% Plot individual cone channels
-% figure,
-% 
-% i_idx={'L','M','S'};
-% 
-% N_d=(LMS_d'./repmat(max(LMS_d'),length(LMS_d),1))'; %normalise
-% N_a=(LMS_a'./repmat(max(LMS_a'),length(LMS_a),1))';
-% I_d=Mel_d/max(Mel_d);
-% I_a=Mel_a/max(Mel_a);
-% 
-% % plot each cone pop in turn
-% for i=1:3
-%     subplot(1,3,i)
-%     hold on
-%     
-%     scatter(N_d(i,:),I_d,'r.')
-%     scatter(N_a(i,:),I_a,'b.')
-%     
-%     xlabel(i_idx{i})
-%     if i==1
-%         ylabel('I (Mel)')
-%     end
-% end
-% 
-% legend({'Daylight','Artificial'},'Location','Best')
-
-
-
-
-% %% Scatter colour shifts vs each rating
-% 
-% for i=1:3
-%     figure,
-%     scatter(e_Rcs(end,:),e_ratings(i,:))
-% end
-% 
-% % Scatter P/I ratio against ratings
-% for i=1:3
-%     figure,    
-%     scatter(P_e./I_e,e_ratings(i,:))
-% end
-
-
-
-
-
-
-% %% Reproduce figure from Royer at al
-% % numbers from Royer et al
-% e_pred_pref = -0.041*(e_Rf)-9.99*(e_Rcs(16,:))-0.90*(e_Rcs(16,:).^2)+106.6*(e_Rcs(16,:).^3)+7.45;
-% 
-% figure, scatter(e_pred_pref,e_ratings(3,:),'k','filled')
-% axis equal
-% xlim([2,7])
-% ylim([2,7])
-% yticks([2:1:7])
-% grid on
-% hold on
-% 
-% plot([2,7],[2,7],'k')
-
-%%
-% figure, scatter(P_e,I_e,((e_ratings(3,:)-min(e_ratings(3,:)))*10)+1)
-
-%% - %% Previous version where I tried to use the IES TM-30-15 SPDs and github code from:
-% https://github.com/jaakkopasanen/matlab-led-designer
-%
-%
-%
-% %% Load Data
-% clear, clc, close all
-%
-% % Load artificial light sources (1nm data from IES TM-30-15 spreadsheet)
-% spd_data_filename='C:\Users\cege-user\Dropbox\UCL\Data\Colour standards\IES TM-30-15 Advanced CalculationTool v1.02.xlsm';
-% [d.num,d.txt,d.raw] = xlsread(spd_data_filename,'MultipleSPDCalc_5nm');
-% S_artif = [380,5,81];
-%
-% for i=1:size(d.num,2)-1
-%     %SPD:
-%     spd_data(i).spd =           d.num(5:end,i+1);
-%
-%     %Additional data:
-%     spd_data(i).sourceType =    d.raw{4,i+1};
-%     spd_data(i).name =          d.raw{5,i+1};
-%     spd_data(i).category =      d.raw{6,i+1};
-%     %spd_data(i).Rf =            d.num(1,i+1);
-%     %spd_data(i).Rg =            d.num(2,i+1);
-%     spd_data(i).CCT =           d.num(3,i+1);
-%
-%     % Only add 'Commercial' SPDs
-%     if strcmp(spd_data(i).category,'Commercial')
-%         if ~exist('T_artif','var') %declare this variable if it doesn't exist yet
-%             T_artif=spd_data(i).spd;
-%             cct_all=spd_data(i).CCT;
-%         else
-%             T_artif(:,end+1)=spd_data(i).spd;
-%             cct_all(:,end+1)=spd_data(i).CCT;
-%         end
-%     end
-% end
-%
-% % Load observer
-% load('T_cones_ss10')  % 10 deg obs
-% load('T_melanopsin')
-%
-% % Calculate LMS of daylight samples
-% LMS_a(:,:)=SplineSpd(S_cones_ss10,T_cones_ss10',S_artif)'*T_artif;
-%
-% % Calulate M of daylight samples
-% Mel_a(:,:)=SplineSpd(S_melanopsin,T_melanopsin',S_artif)'*T_artif;
-%
-%
-% %% Calculate IES TM-30-15 values
-%
-% for i=1:size(T_artif,2)
-%     spd=T_artif(:,i);
-%     cct=round(cct_all(i));
-%     [ Rf(i), Rg(i), bins(:,:,i) ] = spdToRfRg(spd', cct);
-% end
-%
-% bins=bins(1:16,:,:); %in function set 1 is duplicated as 17th for unknown reason
-%
-% %% Start the real stuff
-% % Understand what the bins variable contains
-% % Calculate
-% % Plot the good variable against
-%
-
-
+legend({'Daylight','Artificial'},'Location','best')
 
 
 end
