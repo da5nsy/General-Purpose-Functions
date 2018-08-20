@@ -1,10 +1,20 @@
+function Mel_Phot_Corr()
+
 % Is there a greater correlation between melanopic and photopic luminance
 % for natural light sources than for artificial light sources?
-% Colour? - less simple to test correlation
 
+% % To do list
+% % ----------
+% % - add a line of best fit
+% % - add a r2 value for each line
+
+%% Pre-flight
+
+clear, clc, close all
+
+ryer = 0; %Plot Royer data?
 
 %% Load Data
-clear, clc, close all
 
 % Load artificial light sources (1nm data from IES TM-30-15 spreadsheet)
 spd_data_filename='C:\Users\cege-user\Dropbox\UCL\Data\Colour standards\IES TM-30-15 Advanced CalculationTool v1.02.xlsm';
@@ -34,7 +44,7 @@ for i=1:size(d.num,2)-1
 end
 
 % Load Daylight Data
-load('C:\Users\cege-user\Dropbox\UCL\Reference Data\Granada Data\Granada_daylight_2600_161.mat');
+load('C:\Users\cege-user\Dropbox\UCL\Data\Reference Data\Granada Data\Granada_daylight_2600_161.mat');
 granada = final; clear final
 % 300 - 1100nm, 5nm interval, unlabeled
 % 2600 samples
@@ -45,11 +55,10 @@ S_day = [380,5,81];
 %       spectroradiometric characteristics of narrow-field-of-view
 %       clear skylight in Granada, Spain" (2001)
 
-
 % Load data from:
-% Royer, M., Wilkerson, A., Wei, M., Houser, K., Davis, R., 2016. 
-% "Human perceptions of colour rendition vary with average fidelity, 
-% average gamut, and gamut shape." Lighting Research & Technology 1–26. 
+% Royer, M., Wilkerson, A., Wei, M., Houser, K., Davis, R., 2016.
+% "Human perceptions of colour rendition vary with average fidelity,
+% average gamut, and gamut shape." Lighting Research & Technology 1–26.
 % https://doi.org/10.1177/1477153516663615
 % (Supplemental data received from personal correspondance with first
 % author)
@@ -61,7 +70,7 @@ T_e           = e.num(61:461,2:end); %no reason for 'e', it just followed 'd', f
 e_ratings     = e.num(1:3,2:end);
 e_Rcs         = e.num(10:25,2:end);
 e_Rf          = e.num(8,2:end);
-S_e=[380,1,401];
+S_e = [380,1,401];
 %figure, plot(SToWls(S_e),T_e);
 
 %% Load observer
@@ -106,25 +115,20 @@ I_e=Mel_e/max(Mel_e);
 
 scatter(P_d,I_d,'r')
 scatter(P_a,I_a,'b')
-%scatter(P_e,I_e,'g')
-scatter(P_e,I_e,((e_ratings(2,:)-min(e_ratings(2,:)))*10)+1,'g','filled')
+if ryer
+    scatter(P_e,I_e,'g')
+    %scatter(P_e,I_e,((e_ratings(2,:)-min(e_ratings(2,:)))*10)+1,'g','filled')
+    %scatter(P_e,I_e,((e_ratings(1,:)-min(e_ratings(3,:)))*10)+1,'g','filled')
+end
 
-% scatter(P_e,I_e,((e_ratings(1,:)-min(e_ratings(3,:)))*10)+1,'g','filled')
-% scatter(P_e,I_e,((e_ratings(1,:)-min(e_ratings(3,:)))*10)+1,'g','filled')
+xlabel('Normalised L+M')
+ylabel('Normalised I (Mel)')
 
-xlabel('L+M')
-ylabel('I (Mel)')
-
-legend({'Daylight','Artificial','Royer'},'Location','Best')
-
-% % To do list
-% % ----------
-% % - add a line of best fit
-% % - add a r2 value for each line
-
-
-
-
+if ryer
+    legend({'Daylight','Artificial','Royer'},'Location','Best')
+else
+    legend({'Daylight','Artificial'},'Location','Best')
+end
 
 % %% Plot individual cone channels
 % figure,
@@ -188,7 +192,7 @@ legend({'Daylight','Artificial','Royer'},'Location','Best')
 % plot([2,7],[2,7],'k')
 
 %%
-figure, scatter(P_e,I_e,((e_ratings(3,:)-min(e_ratings(3,:)))*10)+1)
+% figure, scatter(P_e,I_e,((e_ratings(3,:)-min(e_ratings(3,:)))*10)+1)
 
 %% - %% Previous version where I tried to use the IES TM-30-15 SPDs and github code from:
 % https://github.com/jaakkopasanen/matlab-led-designer
@@ -257,3 +261,4 @@ figure, scatter(P_e,I_e,((e_ratings(3,:)-min(e_ratings(3,:)))*10)+1)
 
 
 
+end
