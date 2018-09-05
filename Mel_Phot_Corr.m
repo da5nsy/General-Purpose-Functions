@@ -22,8 +22,6 @@ PF_justReal = 1; %Exclude theoretical illums from Houser data
 % http://dx.doi.org/10.1364/OE.21.010393
 
 load spd_houser.mat
-labels_houser = labels_houser(2:end); %this version incorrectly includes a duplicate value #1
-spd_houser = spd_houser(:,2:end);
 
 codes_houser = strsplit('H	H	G	C	C	D	E	E	E	E	F	F	H	H	H	H	H	H	H	H	H	A	A	G	G	G	G	L	L	L	L	C	C	C	C	C	C	C	C	C	D	D	D	E	E	D	D	D	D	D	C	C	C	C	C	C	C	C	C	C	C	E	E	E	E	E	H	H	H	H	H	H	I	I	I	I	H	H	H	H	B	B	B	B	B	H	H	H	H	G	H	H	H	H	H	H	H	H	H	G	G	G	G	G	G	G	G	G	G	G	G	G	G	G	G	G	A	A	A	A	A	A	A	J	J	J	J	J	J	J	J	K	K	K	K	K	K	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	E	H	H	H	H	H	H	G	G	G	G	G	H	H	H	I	I	I	I	I	I	I	I	I	I	I	I	I	I	I	I	I	I	I	I	I	I	I	I	I	I	I	I	I	I	I	I	I	I	I	I	I	I	I	I	E	E	E	E	F	H	B	A	A	B	E	E	E	F	D	B	B	B	B	B	B	B	I	H	H	H	H	H	H	H	F	F	F	D	D	B	B	B	D	D	F	D	D	D	D	D	D	D	D	D	D	D	D	C	C	F	F	F	F	E	E	E	E	L	L	D	D	D	D	D	C	C	C	C	C	C	F	E	E	E	F	E	E	E	E	A	A	A	A	A	A	A	A	A	A	A	A	A	A	A	E	F	F	F	A	A	A	A	G');
 % could do above with xlsread, would be neater but slower, and relies on
@@ -86,9 +84,18 @@ R_a = (LMS_a(1,:)+LMS_a(2,:))./Mel_a;
 
 
 %% 
+
+% %lin x-axis
+% figure, hold on
+% histogram(R_d,'BinWidth',0.1,'Normalization','probability')
+% histogram(R_a,'BinWidth',0.1,'Normalization','probability')
+
+%log x-axis
+R_dl=log10(R_d);
+R_al=log10(R_a);
 figure, hold on
-histogram(R_d,'BinWidth',0.1,'Normalization','probability')
-histogram(R_a,'BinWidth',0.1,'Normalization','probability')
+histogram(R_dl,'BinWidth',0.02,'Normalization','probability')
+histogram(R_al,'BinWidth',0.02,'Normalization','probability')
 
 xlabel('(L+M) / I')
 ylabel('Probability')
