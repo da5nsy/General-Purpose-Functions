@@ -4,8 +4,8 @@
 clear, clc
 
 %Vrhel reflectances
-load sur_vrhel_withLabels.mat %DG PTB mod
-load sur_vrhel.mat %standard PTB
+load sur_vrhel_withLabels.mat %DG PTB mod (https://github.com/da5nsy/Melanopsin_Computational/blob/0f854262aaf4ef703c41b711bf374ed044673c8d/sur_vrhel_withLabels.mat)
+%load sur_vrhel.mat %standard PTB
 
 %CIE 1931 2deg
 load T_xyz1931.mat
