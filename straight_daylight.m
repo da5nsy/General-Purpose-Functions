@@ -13,7 +13,6 @@
 
 clear, clc, close all
 
-
 %%
 load T_xyz1931.mat
 XYZ_cie = T_xyz1931;
