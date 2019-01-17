@@ -1,5 +1,3 @@
-% I'm trying to do a PCA of a natural scene, skipping the HVS element which
-% seems inherent in most analyses like these
 
 clc, clear, close all
 
@@ -42,13 +40,12 @@ r = reshape(radiances,size(radiances,1)*size(radiances,2),size(radiances,3));
 
 %%
 
+t = reshape(p.score(:,1:3)*p.coeff(:,1:3)',400,400,33); %!!!!!!!!!!!!!!!
 
+for i=1:33
+figure,imagesc(t(:,:,i)); colormap('gray'); colorbar
+end
 
-t = reshape(p.score*p.coeff(1:3,:)',400,400,3);
-
-figure,imagesc(t(:,:,1)); colormap('gray'); colorbar
-figure,imagesc(t(:,:,2)); colormap('gray'); colorbar
-figure,imagesc(t(:,:,3)); colormap('gray'); colorbar
 
 %%
 
