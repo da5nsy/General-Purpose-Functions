@@ -32,9 +32,14 @@ LMS = diag([factors ; 1])*LMS;
 n = size(LMS,2);
 ls = zeros(2,n);
 denom = [1 1 0]*LMS;
-ls = LMS([1 3],:) ./ ([1 1]'*denom)
+ls = LMS([1 3],:) ./ ([1 1]'*denom);
+disp(ls)
 
 % l is correct but s is off by an order of magnitude
+% Needs correction:
+
+ls_corr = ls.*[1;0.05547858];
+disp(ls_corr)
 
 %% Calculates spectral locus co-ordinates
 
