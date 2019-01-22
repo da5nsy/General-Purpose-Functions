@@ -30,8 +30,8 @@ s_EE = LMS_EE(3)/(LMS_EE(1)+LMS_EE(2));
 % % particular, Illuminant E (the equi-energetic spectrum) is represented at
 % % (0,699 237; 0,025 841)."
 
-% disp(l_EE)
-% disp(s_EE)
+disp(l_EE)
+disp(s_EE)
 
 %% Test by computing spectral co-ordinates
 
