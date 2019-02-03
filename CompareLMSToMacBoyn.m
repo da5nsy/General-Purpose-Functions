@@ -38,17 +38,22 @@ LMSToMacBoynDG(LMS)
 
 %% -- %%
 
-clear
+clear, clc
 
-% 1/max(T_cones(3,:)./T_lum)];
+% do it with ss10 to make sure I've understood the calculation correctly
+load T_cones_ss10.mat
+T_lum_ss10 = 0.69283932*T_cones_ss10(1,:)+0.34967567*T_cones_ss10(2,:); %figures from CIE 170-2
+sf_ss10 = 1/max(T_cones_ss10(3,:)./T_lum_ss10); % should produce 0.05547858 (CIE 170-2), 4sf correct then diverges
 
+% calculate the third sf for the sp fundamentals
 load T_cones_sp.mat
+T_lum_sp = 0.6373*T_cones_sp(1,:)+0.3924*T_cones_sp(2,:); %figures from LMSToMacBoyn.m
+sf_sp = 1/max(T_cones_sp(3,:)./T_lum_sp);
 
-1/max(T_cones_sp(3,:)./(0.6373*T_cones_sp(1,:)+0.3924*T_cones_sp(2,:)))
 
 %% -- %%
 
-clear
+clear, clc
 
 load T_cones_sp.mat
 
