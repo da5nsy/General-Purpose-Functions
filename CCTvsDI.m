@@ -1,3 +1,10 @@
+
+% - %
+% NOW USURPED BY https://github.com/da5nsy/DamageIndex 
+% - %
+
+%%
+
 % Script to query the link between correlated colour temperature and damage factor
 
 % SPD data from IES TM-30-15
@@ -132,13 +139,13 @@ end
 
 %% Plot all
 
-%figure, hold on
+figure, hold on
 t_CCT=extractfield(spd_data,'CCT');
 t_DI=extractfield(spd_data,'DI');
 %scatter(t_CCT,t_DI,'k','filled','MarkerFaceAlpha',.2, 'DisplayName','All sources');
 
 c_choice={'Model','Commercial','Experimental','Theoretical'};
-c_choice={'Commercial'};
+%c_choice={'Commercial'};
 %c_choice={'Fluorescent Broadband','Fluorescent Narrowband','High Intensity Discharge','Incandescent/Filament','LED Hybrid','LED Mixed','LED Phosphor','Mathematical','Other'};
 colours=jet(length(c_choice));
 
@@ -147,11 +154,11 @@ for i=1:length(c_choice)
     chosen_category_index=strcmp(extractfield(spd_data,'category'),chosen_category);
     %chosen_category_index=strcmp(extractfield(spd_data,'sourceType'),chosen_category);
     scatter(t_CCT(chosen_category_index),t_DI(chosen_category_index),...
-        [],'k','filled','MarkerFaceAlpha',.5,...
+        [],colours(i,:),'filled','MarkerFaceAlpha',.5,...
         'DisplayName',chosen_category);
 end
 
-%legend('Location','Best')
+legend('Location','Best')
 
 xlabel('CCT')
 ylabel('DI (arbitrarily scaled)')
