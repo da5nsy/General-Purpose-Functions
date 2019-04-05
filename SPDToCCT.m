@@ -1,16 +1,26 @@
 function CCT = SPDToCCT(SPD,S_SPD)
-
-% % Generate SPD(s) for testing purposes
-% clc, clear, close all
-% 
-% % single SPD 
+% CCT = SPDToCCT(SPD,S_SPD)
+%
+% Calculated Correlated Colour Temperature (CCT) from a spectral power
+% distribution.
+%
+% Demo 1:
+%
 % S_SPD = [380,5,81];
-% SPD = GenerateBlackBody(9999,SToWls(S_SPD));
-% 
-% % multiple SPDs
+% SPD = GenerateBlackBody(6500,SToWls(S_SPD));
+% CCT = SPDToCCT(SPD,S_SPD);
+%
+% Demo 2:
+%
+% load B_cieday
+% SPD = GenerateCIEDay(6500,B_cieday);
+% CCT = SPDToCCT(SPD,S_cieday); 
+% % This comes out at 6501 rather than 6500 for unknown reasons.
+%
+% Demo 3:
+%
 % load spd_houser.mat
-% SPD = spd_houser;
-% S_SPD = S_houser;
+% CCT = SPDToCCT(spd_houser,S_houser);
 
 %% Calculate colorimetry
 
