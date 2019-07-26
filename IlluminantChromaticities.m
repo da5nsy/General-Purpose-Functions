@@ -1,5 +1,9 @@
 clear, clc, close all
 
+% Wrote script to check out whether some illuminant chromaticities I was seeing were realistic
+% Loads the granada daylight data and some artifical illuminants
+% Calculates and plots chromaticities in CIE u'v' space
+
 %% Load data
 
 % Load obs
