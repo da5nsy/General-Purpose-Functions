@@ -65,3 +65,24 @@ p(2) = scatter(uv_gran(1,:),uv_gran(2,:),'filled','MarkerFaceAlpha',0.2,'Display
 legend(p,'Location','best')
 
 cleanTicks
+
+%% Add sRGB gamut
+
+sRGB_R_xy = [0.6400,0.3300];
+sRGB_G_xy = [0.3000,0.6000];
+sRGB_B_xy = [0.1500,0.0600];
+
+sRGB_R_uv = xyTouv(sRGB_R_xy'); %Uses PsychToolbox function
+sRGB_G_uv = xyTouv(sRGB_G_xy');
+sRGB_B_uv = xyTouv(sRGB_B_xy');
+
+% scatter(sRGB_R_uv(1),sRGB_R_uv(2),'r*');
+% scatter(sRGB_G_uv(1),sRGB_G_uv(2),'g*');
+% scatter(sRGB_B_uv(1),sRGB_B_uv(2),'b*');
+
+plt(3) = plot([sRGB_R_uv(1),sRGB_G_uv(1)],[sRGB_R_uv(2),sRGB_G_uv(2)],'k:','DisplayName','sRGB Gamut');
+legend('Autoupdate','off')
+plot([sRGB_G_uv(1),sRGB_B_uv(1)],[sRGB_G_uv(2),sRGB_B_uv(2)],'k:')
+plot([sRGB_B_uv(1),sRGB_R_uv(1)],[sRGB_B_uv(2),sRGB_R_uv(2)],'k:')
+
+
