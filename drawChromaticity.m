@@ -25,7 +25,9 @@ if strcmp(type,'1931')
         scatter(spectralLocusxy(1,1:70),spectralLocusxy(2,1:70),[],sRGBSpectralLocus(:,1:70)','filled')
     else
         for i = 1:70%size(sRGBSpectralLocus,2)-1 %curtailed to decrease the size of the black line area
-            plot([spectralLocusxy(1,i),spectralLocusxy(1,i+1)],[spectralLocusxy(2,i),spectralLocusxy(2,i+1)],'Color',sRGBLine(:,i));
+            plot([spectralLocusxy(1,i),spectralLocusxy(1,i+1)],[spectralLocusxy(2,i),spectralLocusxy(2,i+1)],...
+                'Color',sRGBLine(:,i),...
+                'HandleVisibility','off'); % This means that it won't show up on legends
             hold on
         end
     end
@@ -36,7 +38,7 @@ elseif strcmp(type,'upvp')
         scatter(spectralLocus_upvp(1,:),spectralLocus_upvp(2,:),[],sRGBSpectralLocus','filled')
     else
         for i = 1:70%size(sRGBSpectralLocus,2)-1
-            plot([spectralLocus_upvp(1,i),spectralLocus_upvp(1,i+1)],[spectralLocus_upvp(2,i),spectralLocus_upvp(2,i+1)],'Color',sRGBLine(:,i));
+            plot([spectralLocus_upvp(1,i),spectralLocus_upvp(1,i+1)],[spectralLocus_upvp(2,i),spectralLocus_upvp(2,i+1)],'Color',sRGBLine(:,i),'HandleVisibility','off');
             hold on
         end
     end
@@ -51,7 +53,7 @@ elseif strcmp(type,'MB2')
         scatter(spectralLocus_MB(1,:),spectralLocus_MB(2,:),[],sRGBSpectralLocus','filled')
     else
         for i = 1:size(sRGBSpectralLocus,2)-1
-            plot([spectralLocus_MB(1,i),spectralLocus_MB(1,i+1)],[spectralLocus_MB(2,i),spectralLocus_MB(2,i+1)],'Color',sRGBLine(:,i));
+            plot([spectralLocus_MB(1,i),spectralLocus_MB(1,i+1)],[spectralLocus_MB(2,i),spectralLocus_MB(2,i+1)],'Color',sRGBLine(:,i),'HandleVisibility','off');
             hold on
         end
     end
@@ -66,7 +68,7 @@ elseif strcmp(type,'MB10')
         scatter(spectralLocus_MB(1,:),spectralLocus_MB(2,:),[],sRGBSpectralLocus','filled')
     else
         for i = 1:size(sRGBSpectralLocus,2)-1
-            plot([spectralLocus_MB(1,i),spectralLocus_MB(1,i+1)],[spectralLocus_MB(2,i),spectralLocus_MB(2,i+1)],'Color',sRGBLine(:,i));
+            plot([spectralLocus_MB(1,i),spectralLocus_MB(1,i+1)],[spectralLocus_MB(2,i),spectralLocus_MB(2,i+1)],'Color',sRGBLine(:,i),'HandleVisibility','off');
             hold on
         end
     end
@@ -79,7 +81,7 @@ if or(strcmp(type,'1931'),strcmp(type,'upvp'))
     axis equal
     axis([0 1 0 1])
     %xticks([0 1])
-    %yticks([0 1
+    %yticks([0 1])
 elseif or(strcmp(type,'MB2'),strcmp(type,'MB10'))
     axis([0.5 1 0 1])
 end
