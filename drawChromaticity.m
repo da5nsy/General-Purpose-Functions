@@ -7,6 +7,10 @@ sRGBSpectralLocus = XYZToSRGBPrimary(T_xyz1931);
 sRGBSpectralLocus(sRGBSpectralLocus>1) = 1;
 sRGBSpectralLocus(sRGBSpectralLocus<0) = 0;
 
+if ~exist('type','var')
+    type = '1931';
+end
+
 if ~exist('lineOrDots','var')
     lineOrDots = 'line';
 end
