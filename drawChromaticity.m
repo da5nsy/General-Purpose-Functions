@@ -33,6 +33,7 @@ if strcmp(type,'1931')
                 'Color',sRGBLine(:,i),...
                 'HandleVisibility','off'); % This means that it won't show up on legends
             hold on
+            box off
         end
     end
     xlabel('x'), ylabel('y')
@@ -44,6 +45,7 @@ elseif strcmp(type,'upvp')
         for i = 1:70%size(sRGBSpectralLocus,2)-1
             plot([spectralLocus_upvp(1,i),spectralLocus_upvp(1,i+1)],[spectralLocus_upvp(2,i),spectralLocus_upvp(2,i+1)],'Color',sRGBLine(:,i),'HandleVisibility','off');
             hold on
+            box off
         end
     end
     xlabel('u'''),ylabel('v''')
@@ -59,6 +61,7 @@ elseif strcmp(type,'MB2')
         for i = 1:size(sRGBSpectralLocus,2)-1
             plot([spectralLocus_MB(1,i),spectralLocus_MB(1,i+1)],[spectralLocus_MB(2,i),spectralLocus_MB(2,i+1)],'Color',sRGBLine(:,i),'HandleVisibility','off');
             hold on
+            box off
         end
     end
     xlabel('{\itl}_{MB} (2deg)'),ylabel('{\its}_{MB} (2 deg)')
@@ -74,6 +77,7 @@ elseif strcmp(type,'MB10')
         for i = 1:size(sRGBSpectralLocus,2)-1
             plot([spectralLocus_MB(1,i),spectralLocus_MB(1,i+1)],[spectralLocus_MB(2,i),spectralLocus_MB(2,i+1)],'Color',sRGBLine(:,i),'HandleVisibility','off');
             hold on
+            box off
         end
     end
     xlabel('{\itl}_{MB} (10deg)'),ylabel('{\its}_{MB} (10deg)')

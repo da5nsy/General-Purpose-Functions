@@ -4,6 +4,7 @@ clear, clc, close all
 
 d = DGdisplaydefaults;
 drawChromaticity('1931')
+hold on
 cleanTicks
 
 BB_SPD = GenerateBlackBody(1000:10:10000,SToWls([380,5,81]));
