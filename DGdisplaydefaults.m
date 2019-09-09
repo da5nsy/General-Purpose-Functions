@@ -10,7 +10,7 @@ set(groot,'defaultAxesFontName', 'Courier')
 set(groot,'defaultAxesFontSize',12)
 set(groot,'defaultFigureRenderer', 'painters') %renders pdfs as vector graphics
 set(groot,'defaultfigurecolor','white')
-cols = hsv(10); rng(2);
-set(groot,'defaultAxesColorOrder',cols(randperm(size(cols,1)),:))
+%cols = hsv(10); rng(2);
+%set(groot,'defaultAxesColorOrder',cols(randperm(size(cols,1)),:))
 
 end
