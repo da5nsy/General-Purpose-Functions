@@ -3,7 +3,7 @@
 clear, clc, close all
 
 d = DGdisplaydefaults;
-drawChromaticity('1931')
+DrawChromaticity('1931')
 hold on
 cleanTicks
 
