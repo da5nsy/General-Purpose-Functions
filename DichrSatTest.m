@@ -1,3 +1,10 @@
+% Plan:
+% - Calculate dominant wavelengths (hues?) for surfaces under D65 in 1931.
+% - Scatter either sMB (or similar), or abstract monotonic filter values, 
+%   against dominant wavelength. Presumably fairly strong corrlation but 
+%   not necessarily simple mapping. Might be specific areas where things fail.
+% - Same again for purity - presumably much less successful.
+
 clc, clear, close all
 
 %% Data
