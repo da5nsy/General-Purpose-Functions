@@ -14,11 +14,13 @@ clear, clc, close all
 % - using multiple values of xy and multiple value of xy_white
 % - write error for if there's multiple xy_white and only one xy
 % - rotate data to suit (?)
+% - What happens is x_white == x? Does it mess up the trig with
+% infinity/divide by zero stuff?
 
 %% Load CIE data
 
 if ~exist('xy','var')
-    xy = [0.30;0.33];
+    xy = [0.32;0.30];
     disp('Bugtesting mode')
 end
 
@@ -38,10 +40,12 @@ scatter(xy_white(1,:),xy_white(2,:),'k*','DisplayName','White')
 scatter(xy(1,:),xy(2,:),'r*','DisplayName','Surface')
 legend('AutoUpdate','off')
 
-%%
+%% Calculate equation of line that goes through xy_white and xy
 
 m = (xy_white(2,:)-xy(2,:))./(xy_white(1,:)-xy(1,:));
 c = xy(2,:) - (m.*xy(1,:));
+
+%% Generate line of fixed length
 
 xlen = cosd(atand(m(1)))*0.8849;
 incr = xlen/1000;
@@ -54,7 +58,7 @@ y = m(1).*x + c(1);
 
 plot(x,y,'k.')
 
-%%
+%% Find closest point on spectral locus (dominantWavelength)
 
 for k = 1 : size(x,2)
   distances = sqrt((SL(1,:)-x(1,k)).^2 + (SL(2,:)-y(1,k)).^2);
@@ -70,8 +74,43 @@ dominantWavelength = wl(indexOfMin(indexOfMinTop));
 
 disp(dominantWavelength)
 
-%% Working out the grestest distance between points on a 1931 diagram
+%% Purple catch
 
+if minDistanceTop > 0.0254/2
+    % then repeat above but with line in opposite direction
+    
+    xlen = cosd(atand(m(1)))*0.8849;
+    incr = xlen/1000;
+    if xy_white(1) < xy(1)
+        x = xy_white(1):-incr:xy_white(1) - xlen; %signs switched
+    else
+        x = xy_white(1):incr:xy_white(1) + xlen; %signs switched
+    end
+    y = m(1).*x + c(1);
+    
+    figure(1) %adds this back to the original figure
+    plot(x,y,'k.')    
+    
+    for k = 1 : size(x,2)
+        distances = sqrt((SL(1,:)-x(1,k)).^2 + (SL(2,:)-y(1,k)).^2);
+        [minDistance(k), indexOfMin(k)] = min(distances);
+    end
+    [minDistanceTop, indexOfMinTop] = min(minDistance);
+    
+    figure, plot(minDistance)
+    figure, plot(indexOfMin)
+    
+    wl = SToWls(S_xyz1931);
+    dominantWavelength = -wl(indexOfMin(indexOfMinTop)); % provide negated dominantWavelength to denote complementary
+    
+    disp(dominantWavelength)
+    if minDistanceTop > 0.0254/2
+        error('something has gone wrong in purple land')
+    end
+end
+
+%% Working out the grestest distance between arbitrary points on a 1931 diagram
+%
 % for k = 1 : size(SL,2)
 %   distances = sqrt((SL(1,:)-SL(1,k)).^2 + (SL(2,:)-SL(2,k)).^2);
 %   [maxDistance(k), indexOfMax(k)] = max(distances);
@@ -81,6 +120,16 @@ disp(dominantWavelength)
 % end
 %
 % max(maxDistance)
+
+%% Working out the maximum distance between two points on the spectral locus
+%
+% for i=1:S_xyz1931(3)-1
+%     t(i) = sqrt((SL(1,i)-SL(1,i+1)).^2 + (SL(2,i)-SL(2,i+1)).^2);
+% end
+% 
+% figure, plot(SToWls(S_xyz1931),[t,t(end)])
+% maxt = max(t);
+% disp(maxt);
 
 
 end
