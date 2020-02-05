@@ -3,11 +3,12 @@ function git(message)
 % Git upload
 
 if exist([cd,'\.git'], 'file') == 7
-    !git pull
-    disp('hit any key to continue with adding and pushing')
-    pause
     !git add -A
     system(strcat('git commit -m "',message,'"')); %system is just the same as the ! used in other lines, but this way I get to add the message from the function
+    !git pull
+    disp('hit any key to continue with adding and pushing')
+    pause    
+    disp('pushing')
     !git push
     
 else 
