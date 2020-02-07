@@ -1,6 +1,6 @@
 function git(message)
 
-% Git upload
+% Adds, commits, pulls and pushes to github, in a neat wrapper.
 
 if exist([cd,'\.git'], 'file') == 7
     !git add -A
@@ -8,21 +8,12 @@ if exist([cd,'\.git'], 'file') == 7
     disp('pulling')
     !git pull
     disp('hit any key to continue with adding and pushing')
-    pause    
+    pause
     disp('pushing')
-    !git push
-    
-else 
+    !git push    
+else
     disp('change cd to a folder with a .git')
 end
-    
-    %cd('C:\Users\cege-user\Dropbox\Documents\MATLAB\SAPS')
-    %cd('C:\Users\cege-user\Dropbox\Documents\MATLAB\BarrionuevoCao_Reproduction')
-    %cd('C:\Users\cege-user\Dropbox\Documents\MATLAB\General Purpose Functions')
-    %cd('C:\Users\cege-user\Dropbox\Documents\MATLAB\Melanopsin_Computational')   
-    
-    %!git add SAPS_DataAnalysis.m
-    
-    
+
 end
 
