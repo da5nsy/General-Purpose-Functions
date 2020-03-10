@@ -7,9 +7,9 @@ DrawChromaticity('1931')
 hold on
 cleanTicks
 
-BB_SPD = GenerateBlackBody(1000:10:10000,SToWls([380,5,81]));
-
 load T_xyz1931.mat T_xyz1931 S_xyz1931
+
+BB_SPD = GenerateBlackBody(1000:10:10000,SToWls(S_xyz1931));
 
 BB_XYZ = T_xyz1931*BB_SPD;
 BB_xyY = XYZToxyY(BB_XYZ);
