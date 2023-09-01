@@ -13,6 +13,7 @@ function [dominantWavelength,exPurity] = CalcDWandExPur(xy,xy_white)
 % - Build in support for 1964
 % - sub-nm precision?
 % - Remove / comment out building struts
+% - can't handle when line is perfectly horizontal or vertical
 
 %%
 
@@ -21,7 +22,7 @@ function [dominantWavelength,exPurity] = CalcDWandExPur(xy,xy_white)
 %% Load CIE data
 
 if ~exist('xy','var')
-    xy = [0.31271;0.4];
+    xy = [0.3;0.4];
     disp('Bugtesting mode')
 end
 
